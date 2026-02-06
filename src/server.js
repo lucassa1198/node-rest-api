@@ -1,15 +1,17 @@
 const http =require('node:http');
-const user = require('./mocks/user');
-const userJson =JSON.stringify(user);
+const routes = require('./routes')
+
 
 http.createServer(function(request, response){
-if (request.url ==='/users'){
-    response.writeHead(200,
-    {'content-type': 'application/json'}
-);
-response.end(userJson);
-return;
-}
+
+    const route = routes.find(function(r){
+        return request.url === r.endpoint;
+    });
+
+    if (route){
+        route.handler(response);
+        return;
+    }
 
     response.writeHead(200,{'content-type': 'text/html; charset=utf-8'});
 response.end('<h1>Olá cliente</h1>');
